@@ -13,12 +13,12 @@
     "authors": [
         {
             "name": "Michał Sokołowski",
-            "email": "marian.sokolowski@gmail.com",            
+            "email": "marian.sokolowski@gmail.com"
         }
     ],
     "require": {
         "php": ">=5.3.3",
-        "doctrine/doctrine-module": "0.7.*",
+        "doctrine/doctrine-module": "0.7.*"
 
     },
     "autoload": {
