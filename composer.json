@@ -1,0 +1,30 @@
+{
+    "name": "pgs/doctrine",
+    "description": "Zend Framework 2 Module that extends Doctrine module",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "doctrine",
+        "orm",
+        "module",
+        "zf2"
+    ],
+    "homepage": "",
+    "authors": [
+        {
+            "name": "Michał Sokołowski",
+            "email": "marian.sokolowski@gmail.com",            
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "doctrine/doctrine-module": "0.7.*",
+
+    },
+    "autoload": {
+        "psr-0": {
+            "PGSDoctrine\\": "src/",
+            "PGSDoctrineTest\\": "tests/"
+        }
+    }
+}
