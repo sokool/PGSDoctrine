@@ -17,9 +17,10 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
-        "doctrine/doctrine-module": "0.7.*"
-
+        "php": ">=5.3.3",        
+        "phpunit/phpunit": "3.7.*",
+        "doctrine/doctrine-module": "0.7.*",
+        "zendframework/zend-loader": "dev-master"
     },
     "autoload": {
         "psr-0": {
