@@ -20,7 +20,8 @@
         "php": ">=5.3.3",        
         "phpunit/phpunit": "3.7.*",
         "doctrine/doctrine-module": "0.7.*",
-        "zendframework/zend-loader": "~2.1"
+        "zendframework/zend-loader": "2.2.4",
+        "zendframework/zend-modulemanager": "2.2.4"
     },
     "autoload": {
         "psr-0": {
