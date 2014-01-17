@@ -2,7 +2,6 @@
 
 namespace PGSDoctrine\Mvc\Controller\Plugin;
 
-use Company\Entity\Attachment;
 use PGSDoctrine\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Fieldset as ZendFieldset;
 use Zend\Form\Form as ZendForm;
@@ -49,6 +48,7 @@ class Form extends AbstractPlugin
      *
      * @param object $entity
      * @param array $binding
+     * @throws
      * @return ZendForm
      */
     public function bake($entity, $binding = [])
@@ -78,7 +78,7 @@ class Form extends AbstractPlugin
     /**
      * @todo This method is NOT STABLE - not finished - but it's solve some scenarios with baking form based on entity.
      *
-     * @param Fieldset $fieldset
+     * @param ZendFieldset $fieldset
      * @param array $binding
      */
     protected function bindOnBake(ZendFieldset $fieldset, array $binding)
@@ -101,68 +101,6 @@ class Form extends AbstractPlugin
             }
         }
 
-    }
-
-    /**
-     * @deprecated Please use \Application\Mvc\Controller\Plugin\Form::bake() method instead.
-     *
-     * @param $entityName
-     * @param array $options
-     * @return object|\Zend\Form\FieldsetInterface
-     */
-    public function create($entityName, array $options = array())
-    {
-        $serviceManager = $this->getController()->getServiceLocator();
-        /* @var $serviceManager \Zend\ServiceManager\ServiceManager */
-
-        $formElementManager = $serviceManager->get('FormElementManager');
-        /* @var $formElementManager \Zend\Form\FormElementManager */
-
-        $annotationBuilder = $serviceManager->get('DoctrineORMModule\Form\Annotation\AnnotationBuilder');
-        /* @var $annotationBuilder \DoctrineORMModule\Form\Annotation\AnnotationBuilder */
-
-        if (empty($options)) {
-            return $formElementManager->get($entityName);
-        }
-
-        $form = $annotationBuilder
-            ->createForm($entityName)
-            ->setHydrator(new EntityHydrator($serviceManager->get('doctrine.entitymanager.orm_default'), $entityName));
-
-        if (!empty($options) && key_exists('bind', $options) && is_object($options['bind']))
-            $form->bind($options['bind']);
-
-        return $form;
-    }
-
-    public function sendPasswordResetMail(\IlacUser\Entity\User $user, $newPassword)
-    {
-
-        $html = new \Zend\Mime\Part($this->getController()->renderTemplate('settings/password-reset-mail', array(
-            'user' => $user,
-            'newPassword' => $newPassword
-        )));
-        $html->type = 'text/html';
-
-        $body = new \Zend\Mime\Message();
-        $body->setParts(array($html));
-
-        $msg = new \Zend\Mail\Message();
-        $msg->addTo($user->getUsername());
-        $msg->setSubject('ILAC new access');
-        $msg->setFrom('robot@pgs-soft.com');
-        $msg->setBody($body);
-
-        $this->getController()->getServiceLocator()->get('Zend\Mail\Transport\Smtp')->send($msg);
-    }
-
-    public function fileUpload(Attachment $attachment)
-    {
-        return (new FormAnnotationBuilder)
-            ->createForm($attachment)
-            ->add(array('name' => 'submit', 'attributes' => array('value' => 'Upload image file')))
-            ->bind($attachment)
-            ->setValidationGroup(array('fileInfo'));
     }
 
 }
