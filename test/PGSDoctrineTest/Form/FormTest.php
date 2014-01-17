@@ -43,6 +43,13 @@ class FormTest extends \PHPUnit_Framework_TestCase {
         }
     }
 
+    public function testBla() {
+        $formPlugin = $this->form();
+        /** @var \PGSDoctrine\Mvc\Controller\Plugin\Form $formPlugin */
+
+        $personForm = $formPlugin->bake($personEntity, ['address' => true]);
+    }
+
 }
 
 ?>
