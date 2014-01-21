@@ -52,12 +52,10 @@ class FormAnnotationsListener implements ListenerAggregateInterface
         $formSpec = $e->getParam('formSpec');
 
         $entity = $e->getTarget()->getEntity();
-        $entityManager = $e->getTarget()->getEntityManager();
 
-        $entity = is_object($entity) ? get_class($entity) : $entity;
-
-        $formSpec['hydrator'] = new $hydrator($entityManager, $entity);
+        $formSpec['hydrator'] = [
+            'type' => $hydrator,
+            'target_class' => is_object($entity) ? get_class($entity) : $entity,
+        ];
     }
 }
-
-?>

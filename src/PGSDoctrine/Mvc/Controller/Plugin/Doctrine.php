@@ -26,7 +26,7 @@ class Doctrine extends AbstractPlugin
     }
 
     /**
-     * @param object $object
+     * @param  object                                      $object
      * @return \Application\Mvc\Controller\Plugin\Doctrine
      */
     public function persist($object)
@@ -37,7 +37,7 @@ class Doctrine extends AbstractPlugin
     }
 
     /**
-     * @param object $object
+     * @param  object                                      $object
      * @return \Application\Mvc\Controller\Plugin\Doctrine
      */
     public function remove($object)
@@ -48,7 +48,7 @@ class Doctrine extends AbstractPlugin
     }
 
     /**
-     * @param object $object
+     * @param  object                                      $object
      * @return \Application\Mvc\Controller\Plugin\Doctrine
      */
     public function flush($entity = null)
@@ -77,5 +77,3 @@ class Doctrine extends AbstractPlugin
         return $paginator;
     }
 }
-
-?>

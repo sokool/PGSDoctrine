@@ -22,6 +22,7 @@
         "zendframework/zend-loader": "*",
         "zendframework/zend-view": "*",
         "zendframework/zend-serializer": "*",
+        "zendframework/zend-code": "*",
         "zendframework/zend-modulemanager": "*"
     },
     "autoload": {

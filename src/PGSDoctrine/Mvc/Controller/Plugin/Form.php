@@ -27,15 +27,16 @@ class Form extends AbstractPlugin
                     return false;
             }
 
-
             $form->setData($data);
             if ($form->isValid()) {
                 if (!is_null($onSuccess))
                     $onSuccess($form, $data);
+
                 return true;
             } else {
                 if (!is_null($onFail))
                     $onFail($form, $data);
+
                 return false;
             }
         }
@@ -46,8 +47,8 @@ class Form extends AbstractPlugin
     /**
      * @todo This method is not stable - not finished - buts it's solve some scenarios with baking form based on entity.
      *
-     * @param object $entity
-     * @param array $binding
+     * @param  object   $entity
+     * @param  array    $binding
      * @throws
      * @return ZendForm
      */
@@ -79,7 +80,7 @@ class Form extends AbstractPlugin
      * @todo This method is NOT STABLE - not finished - but it's solve some scenarios with baking form based on entity.
      *
      * @param ZendFieldset $fieldset
-     * @param array $binding
+     * @param array        $binding
      */
     protected function bindOnBake(ZendFieldset $fieldset, array $binding)
     {
@@ -104,5 +105,3 @@ class Form extends AbstractPlugin
     }
 
 }
-
-?>
