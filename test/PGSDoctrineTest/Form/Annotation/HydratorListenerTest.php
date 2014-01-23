@@ -16,7 +16,7 @@ use Zend\EventManager\Event;
 use Zend\Form\Annotation\AllowEmpty;
 use Zend\Form\Annotation\Hydrator;
 
-class FormHydratorListenerTest extends \PHPUnit_Framework_TestCase
+class HydratorListenerTest extends \PHPUnit_Framework_TestCase
 {
     private function getEvent()
     {

@@ -2,6 +2,9 @@
 namespace PGSDoctrine;
 
 return array(
+    'mintsoft_form_bakery' => [
+        'cache' => []
+    ],
     'doctrine' => array(
         'driver' => array(
             'PGSDoctrineTest\Assets\Entity' => array(

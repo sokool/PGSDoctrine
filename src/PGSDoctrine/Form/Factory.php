@@ -11,6 +11,7 @@ namespace PGSDoctrine\Form;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\Debug;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
+use Zend\Form\ElementInterface;
 use Zend\Form\Exception;
 use Zend\Form\Factory as ZendFormFactory;
 use Zend\Form\FieldsetInterface;

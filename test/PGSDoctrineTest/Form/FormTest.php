@@ -29,7 +29,12 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     public function testHasManyFieldset()
     {
+        $a = Bootstrap::getServiceManager()->get('MintSoft\Form\Bakery');
 
+        $form = $a->bake(new Person());
+        var_dump($form->get('address'));
+        exit;
+        $this->assertTrue($a === $b);
     }
 //
 //    public function testFormFactoryHasObjectManager() {

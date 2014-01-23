@@ -2,6 +2,7 @@
 
 namespace PGSDoctrineTest; // our namespace
 
+use PGSDoctrine\Module;
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
