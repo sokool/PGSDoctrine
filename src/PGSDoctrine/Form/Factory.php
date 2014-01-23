@@ -22,7 +22,7 @@ class Factory extends ZendFormFactory implements ObjectManagerAwareInterface
 
     protected function prepareAndInjectHydrator($hydratorOrName, FieldsetInterface $fieldset, $method)
     {
-        if (is_array($hydratorOrName) && array_key_exists('type', $hydratorOrName)) {
+        if (is_array($hydratorOrName) && array_key_exists('target_class', $hydratorOrName)) {
             if (class_exists($hydratorOrName['type'])) {
                 $fieldset->setHydrator(new $hydratorOrName['type']($this->entityManager, $hydratorOrName['target_class']));
 

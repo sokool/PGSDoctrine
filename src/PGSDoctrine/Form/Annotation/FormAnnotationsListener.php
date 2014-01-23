@@ -45,17 +45,13 @@ class FormAnnotationsListener implements ListenerAggregateInterface
         if (!$annotation instanceof \Zend\Form\Annotation\Hydrator)
             return;
 
-        $hydrator = $annotation->getHydrator();
-        if (!is_string($hydrator) || $hydrator != 'DoctrineModule\Stdlib\Hydrator\DoctrineObject')
-            return;
-
         $formSpec = $e->getParam('formSpec');
 
         $entity = $e->getTarget()->getEntity();
 
-        $formSpec['hydrator'] = [
-            'type' => $hydrator,
+        $formSpec['hydrator'] =  new \ArrayObject([
+            'type' => $annotation->getHydrator(),
             'target_class' => is_object($entity) ? get_class($entity) : $entity,
-        ];
+        ]);
     }
 }
