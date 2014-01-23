@@ -56,6 +56,7 @@ class Person {
     public function setAddress($address)
     {
         $this->address = $address;
+        return $this;
     }
 
     /**

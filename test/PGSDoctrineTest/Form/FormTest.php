@@ -7,6 +7,7 @@ use Doctrine\Common\Util\Debug;
 use PGSDoctrine\Form\Annotation\AnnotationBuilder as PGSAnnotationBuilder;
 use PGSDoctrine\Form\Annotation\FormAnnotationsListener;
 use PGSDoctrine\Form\Factory;
+use PGSDoctrineTest\Assets\Entity\Address;
 use PGSDoctrineTest\Assets\Entity\Person;
 use PGSDoctrineTest\Bootstrap;
 use Zend\EventManager\Event;
@@ -29,10 +30,26 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     public function testHasManyFieldset()
     {
-        $a = Bootstrap::getServiceManager()->get('MintSoft\Form\Bakery');
+        $entity = new Person();
+        $entity->setEmail('marian.soko@onet.de');
+        $adres = new Address();
+        $adres->setCityName('Wrocław');
 
-        $form = $a->bake(new Person());
-        var_dump($form->get('address'));
+        $entity->setAddress($adres);
+
+
+        $formBakery = Bootstrap::getServiceManager()->get('MintSoft\Form\Bakery');
+        $form = $formBakery->bake($entity, [
+            'address' => [
+                'cars',
+                'customers',
+            ]
+        ]);
+        //$form = $formBakery->bake(new Person());
+
+
+        var_dump($form->get('email')->getValue());
+        var_dump($form->get('address')->get('cityName')->getValue());
         exit;
         $this->assertTrue($a === $b);
     }
