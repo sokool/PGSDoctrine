@@ -2,31 +2,32 @@
 
 namespace PGSDoctrineTest\Assets\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Form\Annotation as Form;
 use PGSDoctrine\Form\Annotation as PGSForm;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @Form\Name("person")
- * @Form\Hydrator("DoctrineModule\Stdlib\Hydrator\DoctrineObject")
- * 
+ *
  * @ORM\Entity()
  * @ORM\Table(name="persons")
  */
-class Person {
+class Person
+{
 
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * 
+     *
      * @Form\Exclude()
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string", nullable=false, name="username")
-     * 
+     *
      * @Form\Filter({"name":"StringTrim"})
      * @Form\Validator({"name":"StringLength", "options":{"min":1, "max":25}})
      * @Form\Validator({"name":"Regex", "options":{"pattern":"/^[a-zA-Z][a-zA-Z0-9_-]{0,24}$/"}})
@@ -37,7 +38,7 @@ class Person {
 
     /**
      * @ORM\Column(type="string", nullable=false, name="email")
-     * 
+     *
      * @Form\Type("Zend\Form\Element\Email")
      * @Form\Options({"label":"Your email address:"})
      */
@@ -45,13 +46,34 @@ class Person {
 
     /**
      * @ORM\OneToOne(targetEntity="PGSDoctrineTest\Assets\Entity\Address", cascade={"persist"})
-     * 
+     *
      * @Form\ComposedObject("PGSDoctrineTest\Assets\Entity\Address")
      */
     protected $address;
 
     /**
+     * @ORM\ManyToOne(targetEntity="PGSDoctrineTest\Assets\Entity\Company", inversedBy="persons")
+     *
+     * @Form\ComposedObject("PGSDoctrineTest\Assets\Entity\Company")
+     **/
+    protected $company;
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="PGSDoctrineTest\Assets\Entity\Contact", mappedBy="person")
+     *
+     * @Form\ComposedObject("PGSDoctrineTest\Assets\Entity\Contact")
+     **/
+    protected $contacts;
+
+    public function __construct()
+    {
+        $this->contacts = new ArrayCollection();
+    }
+
+    /**
      * @param mixed $address
+     * @return \PGSDoctrineTest\Assets\Entity\Person
      */
     public function setAddress($address)
     {
@@ -69,10 +91,12 @@ class Person {
 
     /**
      * @param mixed $email
+     * @return \PGSDoctrineTest\Assets\Entity\Person
      */
     public function setEmail($email)
     {
         $this->email = $email;
+        return $this;
     }
 
     /**
@@ -101,10 +125,12 @@ class Person {
 
     /**
      * @param mixed $username
+     * @return \PGSDoctrineTest\Assets\Entity\Person
      */
     public function setUsername($username)
     {
         $this->username = $username;
+        return $this;
     }
 
     /**
@@ -115,7 +141,47 @@ class Person {
         return $this->username;
     }
 
+    public function addContact(Contact $contact)
+    {
+        $contact->setProduct($this);
+        $this->contacts[] = $contact;
 
+        return $this;
+    }
+
+    /**
+     * @param mixed $company
+     */
+    public function setCompany($company)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * @param mixed $contacts
+     */
+    public function setContacts($contacts)
+    {
+        $this->contacts = $contacts;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContacts()
+    {
+        return $this->contacts;
+    }
 
 }
 

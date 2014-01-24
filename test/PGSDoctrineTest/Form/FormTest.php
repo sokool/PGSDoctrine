@@ -5,54 +5,198 @@ namespace PGSDoctrineTest\Form;
 use Doctrine\Common\Annotations\Annotation;
 use Doctrine\Common\Util\Debug;
 use PGSDoctrine\Form\Annotation\AnnotationBuilder as PGSAnnotationBuilder;
-use PGSDoctrine\Form\Annotation\FormAnnotationsListener;
-use PGSDoctrine\Form\Factory;
 use PGSDoctrineTest\Assets\Entity\Address;
+use PGSDoctrineTest\Assets\Entity\Company;
+use PGSDoctrineTest\Assets\Entity\Contact;
 use PGSDoctrineTest\Assets\Entity\Person;
 use PGSDoctrineTest\Bootstrap;
-use Zend\EventManager\Event;
-use Zend\Form\Annotation\AllowEmpty;
-use Zend\Form\Annotation\Hydrator;
+use Zend\Form\View\Helper\FormRow;
 use Zend\Stdlib\ArrayObject;
 
 class FormTest extends \PHPUnit_Framework_TestCase
 {
-    public function testHasOne()
+    /**
+     * @return \PGSDoctrine\Form\Bakery\Service
+     */
+    protected function getBakery()
     {
-        $entity = new Person();
-        $form = (new PGSAnnotationBuilder(Bootstrap::getServiceManager()->get('Doctrine\ORM\EntityManager')))->createForm($entity);
-        $addressFieldset = $form->get('address');
+        return Bootstrap::getServiceManager()->get('MintSoft\Form\Bakery');
+    }
 
-        $this->assertInstanceOf('Zend\Form\Fieldset', $addressFieldset);
+    public function testFormBaked()
+    {
+        $personForm = $this
+            ->getBakery()
+            ->bake(new Person());
+
+        $this->assertInstanceOf('Zend\Form\Form', $personForm);
+        $this->assertInstanceOf('Zend\Form\Element\Text', $personForm->get('username'));
+        $this->assertInstanceOf('Zend\Form\Element\Email', $personForm->get('email'));
+        $this->assertInstanceOf('DoctrineModule\Stdlib\Hydrator\DoctrineObject', $personForm->getHydrator());
+        $this->assertNull($personForm->getObject());
+
+    }
+
+
+    public function testObjectIsBound()
+    {
+        $personEntity = new Person();
+        $personForm = $this
+            ->getBakery()
+            ->bake($personEntity, true);
+
+        $this->assertSame($personForm->getObject(), $personEntity);
+    }
+
+    public function testBakedFormElementsHasBoundValues()
+    {
+        $personEntity = (new Person())
+            ->setUsername('Beshtak')
+            ->setEmail('beshtak@yahoo.com');
+
+        $personForm = $this
+            ->getBakery()
+            ->bake($personEntity, true);
+
+        $this->assertSame($personEntity->getUsername(), $personForm->get('username')->getValue());
+        $this->assertSame($personEntity->getEmail(), $personForm->get('email')->getValue());
+
+    }
+
+    public function testOneBakedAgregation()
+    {
+        $personEntity = new Person();
+
+        $personForm = $this
+            ->getBakery()
+            ->bake($personEntity);
+
+        $addressFieldset = $personForm->get('address');
+
+        $this->assertInstanceOf('\Zend\Form\Fieldset', $addressFieldset);
         $this->assertInstanceOf('DoctrineModule\Stdlib\Hydrator\DoctrineObject', $addressFieldset->getHydrator());
+        $this->assertInstanceOf('Zend\Form\Element\Text', $addressFieldset->get('streetName'));
+        $this->assertInstanceOf('Zend\Form\Element\Text', $addressFieldset->get('houseNumber'));
+        $this->assertInstanceOf('Zend\Form\Element\Hidden', $addressFieldset->get('latitude'));
+        $this->assertNull($addressFieldset->getObject());
 
     }
 
-    public function testHasManyFieldset()
+    public function testAgregatedObjectIsBound()
     {
-        $entity = new Person();
-        $entity->setEmail('marian.soko@onet.de');
-        $adres = new Address();
-        $adres->setCityName('Wrocław');
 
-        $entity->setAddress($adres);
+        $personEntity = (new Person())
+            ->setUsername('Kolosz')
+            ->setCompany(
+                (new Company())
+                    ->setName('MintSoftware')
+                    ->setAddress(
+                        (new Address())
+                            ->setCityName('Grudziądz')
+                    )
+            )
+            ->setAddress(new Address());
 
+//        $personForm = $this
+//            ->getBakery()
+//            ->bake($personEntity, true);
 
-        $formBakery = Bootstrap::getServiceManager()->get('MintSoft\Form\Bakery');
-        $form = $formBakery->bake($entity, [
-            'address' => [
-                'cars',
-                'customers',
+//
+//        //Debug::dump($personForm->get('contacts'));
+//        //exit;
+//        $this->assertNull($personForm->get('address')->getObject());
+        //var_dump($personEntity);
+        //exit;
+        //$a = microtime(true);
+        $personForm = $this
+            ->getBakery()
+            ->bake($personEntity, [
+                'address' => true,
+                'company' => [
+                    'address' => true
+                ],
+                'contact' => [
+                    'address' => true
+                ]
+            ]);
+        //$b = microtime(true);
+//
+//        echo $b - $a . PHP_EOL;
+//
+//        echo 'Person Elements: ';
+//        print_r(array_keys($personForm->getElements()));
+//        echo 'Person fieldsets: ';
+//        print_r(array_keys($personForm->getFieldsets()));
+//
+//        echo 'PersonAddress fieldsets: ';
+//        print_r(array_keys($personForm->get('address')->getFieldsets()));
+//        echo 'PersonAddress Elements: ';
+//        print_r(array_keys($personForm->get('address')->getElements()));
+//
+//
+//        echo 'PersonCompany fieldsets: ';
+//        print_r(array_keys($personForm->get('company')->getFieldsets()));
+//        echo 'PersonCompany Elements: ';
+//        print_r(array_keys($personForm->get('company')->getElements()));
+//
+//        echo 'PersonCompanyAddress fieldsets: ';
+//        print_r(array_keys($personForm->get('company')->get('address')->getFieldsets()));
+//        echo 'PersonCompanyAddress Elements: ';
+//        print_r(array_keys($personForm->get('company')->get('address')->getElements()));
+//
+//        echo 'PersonContacts fieldsets: ';
+//        print_r(array_keys($personForm->get('contacts')->getFieldsets()));
+//        echo 'PersonContacts Elements: ';
+//        print_r(array_keys($personForm->get('contacts')->getElements()));
+//
+//
+//        exit;
+        $personForm->prepare();
+        $personForm->setData([
+            'username' => 'Beshtak',
+            'email' => 'dood@o2.pl',
+            'company' => [
+                'name' => 'PiGiEz',
+                'address' => [
+                    'cityName' => 'Wrocław'
+                ]
+
             ]
+
         ]);
-        //$form = $formBakery->bake(new Person());
+
+        //var_dump($personForm->getMessages());
+        $personForm->isValid();
+        //Debug::dump($personForm->getData(), 3);
+        var_dump($personForm->get('company')->get('address')->get('cityName'));
+        //exit;
+        $this->assertSame($personEntity, $personForm->getObject());
+        $this->assertSame($personEntity->getAddress(), $personForm->get('address')->getObject());
 
 
-        var_dump($form->get('email')->getValue());
-        var_dump($form->get('address')->get('cityName')->getValue());
-        exit;
-        $this->assertTrue($a === $b);
     }
+//
+//        $entity = new Person();
+//        $entity->setEmail('marian.soko@onet.de');
+//        $adres = new Address();
+//        $adres->setCityName('Wrocław');
+//
+//        $entity->setAddress($adres);
+//
+//        $a = microtime(true);
+//        $formBakery = Bootstrap::getServiceManager()->get('MintSoft\Form\Bakery');
+//
+//        $form = $formBakery->bake($entity, ['address' => ['cars']]);
+//        //$form = $formBakery->bake(new Person());
+//        $b = microtime(true);
+//        echo $b - $a;
+
+    //var_dump($form->getObject());
+    //var_dump($form->get('email')->getValue());
+    //var_dump($form->get('address')->get('cityName')->getValue());
+    //exit;
+    //$this->assertTrue($a === $b);
+    //}
 //
 //    public function testFormFactoryHasObjectManager() {
 //        $entityManager = \PGSDoctrineTest\Bootstrap::getServiceManager()->get('Doctrine\ORM\EntityManager');

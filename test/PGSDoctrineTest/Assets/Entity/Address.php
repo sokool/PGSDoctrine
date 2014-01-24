@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @Form\Name("address")
- * @Form\Hydrator("DoctrineModule\Stdlib\Hydrator\DoctrineObject")
  *
  * @ORM\Entity()
  * @ORM\Table(name="address")
@@ -46,7 +45,7 @@ class Address
      * @ORM\Column(name="house_number", type="string", length=16, nullable=true)
      *
      *
-     * @Form\Type("Number")
+     * @Form\Type("Text")
      * @Form\Options({"label":"House number"})
      */
     protected $houseNumber;
@@ -62,7 +61,7 @@ class Address
     /**
      * @ORM\Column(name="postal_code", type="string", length=32, nullable=true)
      *
-     * @Form\Type("Range")
+     * @Form\Type("Text")
      * @Form\Options({"label":"Postal"})
      */
     protected $postalCode;
@@ -78,6 +77,7 @@ class Address
     /**
      * @ORM\Column(type="string", nullable=true)
      *
+     * @Form\Type("Hidden")
      * @Form\Attributes({
      *        "type":"hidden",
      *        "id":"longitude"
@@ -88,8 +88,8 @@ class Address
     /**
      * @ORM\Column(type="string", nullable=true)
      *
+     * @Form\Type("Hidden")
      * @Form\Attributes({
-     *        "type":"hidden",
      *        "id":"latitude"
      * })
      */
@@ -101,6 +101,8 @@ class Address
     public function setCityName($cityName)
     {
         $this->cityName = $cityName;
+
+        return $this;
     }
 
     /**
